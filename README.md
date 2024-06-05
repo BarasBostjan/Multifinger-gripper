@@ -29,6 +29,6 @@ This project uses Matlab for control and automation. Included in this repository
 3. Run the Matlab code -> [Software and Control](SW/)
 
 ### Open Lincense
-TODOdodo
+TODO
 - state the lincense (open, but must cite)
 - cite the paper
