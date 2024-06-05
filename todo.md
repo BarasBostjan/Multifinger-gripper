@@ -1,9 +1,9 @@
-# Things to do before submission
-
+# Things to do before submission MD:
 - Move files to new folders / delete old ones
-- Rename all files to use english!
-- Write instrutions for 3d_models
 - Write instructions for assembly
-- Write/add bill of materials
 - Write SW instructions
-- Add SW
+# Next steps for BB:
+- Rename all files to use english!
+- Add all *needed* models to 3D_models folder (use subfolders)
+- Write/add bill of materials in assembly
+- Add SW to SW folder (use subfolders)
