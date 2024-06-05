@@ -1,4 +1,4 @@
-# Printing the gripper
+# Printing guide
 
 Here we outline the entire process of printing the gripper. The following sections detail the printers used, materials, and challenges encountered during the printing process.
 
