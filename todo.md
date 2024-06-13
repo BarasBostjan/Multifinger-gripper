@@ -1,6 +1,6 @@
 # Things to do before submission MD:
 - Move files to new folders / delete old ones
-- Write instructions for assembly
+- ~~Write instructions for assembly~~
 - Write SW instructions
 # Next steps for BB:
 - Rename all files to use english!
