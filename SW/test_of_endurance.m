@@ -16,7 +16,7 @@ end
  global PROTOCOL_VERSION 
  PROTOCOL_VERSION            = 2.0;
 
- DEVICENAME                  = 'COM6'; 
+ DEVICENAME                  = 'COM3'; 
 
 
  % Common Control Table Address and Data 
@@ -69,22 +69,22 @@ else
 end
 
 % setup
-write1ByteTxRx(port_num, PROTOCOL_VERSION, 1, 11, 4); % Nastavi operating mode (1-hitrost, 3-rotacija na enem obratu, 4-rotacija na več obratih)
-write2ByteTxRx(port_num, PROTOCOL_VERSION, 1, 44, 265); % Nastavi velocity limit (default je 265)
+write1ByteTxRx(port_num, PROTOCOL_VERSION, 1, 11, 4); % Set operating mode (1-speed, 3-single rotation, 4-multi-turn rotation)
+write2ByteTxRx(port_num, PROTOCOL_VERSION, 1, 44, 265); % Set velocity limit (default is 265)
 
-write1ByteTxRx(port_num, PROTOCOL_VERSION, 2, 11, 4); % Nastavi operating mode (1-hitrost, 3-rotacija na enem obratu, 4-rotacija na več obratih)
-write2ByteTxRx(port_num, PROTOCOL_VERSION, 2, 44, 265); % Nastavi velocity limit (default je 265)
+write1ByteTxRx(port_num, PROTOCOL_VERSION, 2, 11, 4); % Set operating mode (1-speed, 3-single rotation, 4-multi-turn rotation)
+write2ByteTxRx(port_num, PROTOCOL_VERSION, 2, 44, 265); % Set velocity limit (default is 265)
 
-write1ByteTxRx(port_num, PROTOCOL_VERSION, 3, 11, 4); % Nastavi operating mode (1-hitrost, 3-rotacija na enem obratu, 4-rotacija na več obratih)
-write2ByteTxRx(port_num, PROTOCOL_VERSION, 3, 44, 265); % Nastavi velocity limit (default je 265)
+write1ByteTxRx(port_num, PROTOCOL_VERSION, 3, 11, 4); % Set operating mode (1-speed, 3-single rotation, 4-multi-turn rotation)
+write2ByteTxRx(port_num, PROTOCOL_VERSION, 3, 44, 265); % Set velocity limit (default is 265)
 
 global offset;
-offset = [-7288 -30429 -24634];  %pove pri kateri številki hočemo imeti odčitek enak 0. Torej če motor v skrajnem zaprtem položaju izpisuje -23379 potem mi tej vrednosti odštejemo offset, da nam pokaže 0. 
+offset = [-7288 -16642 2943];  % indicates the number at which we want the reading to be zero. So if the motor in the fully closed position displays -23379, we subtract this value from the offset to show 0. 
 global max;
-max = [23608  33309 26721];  %pove kakšen je maksimalen razmik med vrednostjo na motorju pri najbolj zaprtem in najbolj odprtem prstu. 
-                            %V splošnem niso enake vrednosti vendar je idealno, če so (V nadaljevanju sta 2 funkciji za manipuliranje teh vrednosti)
+max = [23608  23608 23608];  % indicates the maximum difference between the value on the motor in the most closed and most open finger positions.
+                            % Generally, these values are not the same, but it is ideal if they are (Below are 2 functions for manipulating these values)
 global defaultSpeed;
-defaultSpeed = 50;   %nastavitev osnovne hitrosti, ki jo prijemalo uporabi, če uporabnik ne specificira specifične hitrosti premikov v funkcijah
+defaultSpeed = 50;   % setting the default speed used by the gripper if the user does not specify specific movement speeds in the functions
 
 
 % Enable Dynamixel Torque
@@ -100,6 +100,7 @@ elseif dxl_error ~= 0
 else
     fprintf('Dynamixel has been successfully connected \n');
 end
+
 % Main
 
 tic
