@@ -69,22 +69,22 @@ else
 end
 
 % setup
-write1ByteTxRx(port_num, PROTOCOL_VERSION, 1, 11, 4); % Nastavi operating mode (1-hitrost, 3-rotacija na enem obratu, 4-rotacija na več obratih)
-write2ByteTxRx(port_num, PROTOCOL_VERSION, 1, 44, 265); % Nastavi velocity limit (default je 265)
+write1ByteTxRx(port_num, PROTOCOL_VERSION, 1, 11, 4); % Set operating mode (1-speed, 3-single rotation, 4-multi-turn rotation)
+write2ByteTxRx(port_num, PROTOCOL_VERSION, 1, 44, 265); % Set velocity limit (default is 265)
 
-write1ByteTxRx(port_num, PROTOCOL_VERSION, 2, 11, 4); % Nastavi operating mode (1-hitrost, 3-rotacija na enem obratu, 4-rotacija na več obratih)
-write2ByteTxRx(port_num, PROTOCOL_VERSION, 2, 44, 265); % Nastavi velocity limit (default je 265)
+write1ByteTxRx(port_num, PROTOCOL_VERSION, 2, 11, 4); % Set operating mode (1-speed, 3-single rotation, 4-multi-turn rotation)
+write2ByteTxRx(port_num, PROTOCOL_VERSION, 2, 44, 265); % Set velocity limit (default is 265)
 
-write1ByteTxRx(port_num, PROTOCOL_VERSION, 3, 11, 4); % Nastavi operating mode (1-hitrost, 3-rotacija na enem obratu, 4-rotacija na več obratih)
-write2ByteTxRx(port_num, PROTOCOL_VERSION, 3, 44, 265); % Nastavi velocity limit (default je 265)
+write1ByteTxRx(port_num, PROTOCOL_VERSION, 3, 11, 4); % Set operating mode (1-speed, 3-single rotation, 4-multi-turn rotation)
+write2ByteTxRx(port_num, PROTOCOL_VERSION, 3, 44, 265); % Set velocity limit (default is 265)
 
 global offset;
-offset = [-7288 -16642 2943];  %pove pri kateri številki hočemo imeti odčitek enak 0. Torej če motor v skrajnem zaprtem položaju izpisuje -23379 potem mi tej vrednosti odštejemo offset, da nam pokaže 0. 
+offset = [-7288 -16642 2943];  % indicates the number at which we want the reading to be zero. So if the motor in the fully closed position displays -23379, we subtract this value from the offset to show 0. 
 global max;
-max = [23608  23608 23608];  %pove kakšen je maksimalen razmik med vrednostjo na motorju pri najbolj zaprtem in najbolj odprtem prstu. 
-                            %V splošnem niso enake vrednosti vendar je idealno, če so (V nadaljevanju sta 2 funkciji za manipuliranje teh vrednosti)
+max = [23608  23608 23608];  % indicates the maximum difference between the value on the motor in the most closed and most open finger positions.
+                            % Generally, these values are not the same, but it is ideal if they are (Below are 2 functions for manipulating these values)
 global defaultSpeed;
-defaultSpeed = 50;   %nastavitev osnovne hitrosti, ki jo prijemalo uporabi, če uporabnik ne specificira specifične hitrosti premikov v funkcijah
+defaultSpeed = 50;   % setting the default speed used by the gripper if the user does not specify specific movement speeds in the functions
 
 
 % Enable Dynamixel Torque
@@ -175,54 +175,54 @@ disp('konec programa')
 
 
 
-%Funkcije
-function [] = calibrate(ID)  %kalibracija prstov -> prst se premakne v obe svoji skrajni legi in s tem se določita parametra "offset" in "max" za določen prst
-    global max    %deklaracija globalnih spremenljivk
+%Functions
+function [] = calibrate(ID)  %finger calibration -> the finger moves to both of its extreme positions, thus determining the parameters "offset" and "max" for the specific finger
+    global max    %declaration of global variables
     global offset
     global port_num
     global PROTOCOL_VERSION 
-    offset(ID) = 0;     %pobriše prejšnji offset in ga nastavi na 0;
+    offset(ID) = 0;     %clears the previous offset and sets it to 0;
     write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 64, 0);   %disable torque
-    write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 11, 1);   %nastavi Operating Mode na Velocity control
+    write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 11, 1);   %set Operating Mode to Velocity control
     write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 64, 1);   %enable torque
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 4294967295 - 100);  %začne se premikat
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 4294967295 - 100);  %starts moving
     i = 0;
     torque = 0;
-    while i < 30   %čaka, da ni več trenja (recimo, da je prst zabit v eni skrajnosti in je odčitani navor še vedno velik, čeprav prst premikamo stran od skrajnosti)
-        torque = readTorque(ID);    %prebere vrednost navora
-        if torque < 60     %prišteje števcu 1 vsakič, ko je navor manjši od predpisane vrednosti, sicer števec resetira
+    while i < 30   %waits for no friction (let's assume the finger is stuck in one extreme position and the measured torque is still high even though we are moving the finger away from the extreme)
+        torque = readTorque(ID);    %reads the torque value
+        if torque < 60     %increments the counter by 1 every time the torque is less than the specified value, otherwise resets the counter
             i = i + 1;
         else
             i = 0;
         end
     end
     torque = 0;   
-    while torque < 150   %začne iskati spodnjo mejo, čaka da se navor poveča nad minimalni predpisani navor
+    while torque < 150   %starts searching for the lower limit, waits for the torque to increase above the minimum specified torque
         torque = readTorque(ID);
     end
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 0);   %motor se ustavi
-    pause(0.2)   % čaka, da se umiri (da se motor dejansko ustavi)
-    offset(ID) = readRotation(ID);  %nastavi spodnjo mejo(v mislih imamo, da je bil do sedaj offset = 0, kar pomeni, da funkcija readRotation še vrača dejansko vrednosti, ki nam jo pošilja motor)
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 100);   %začne se premikat v nasprotno smer
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 0);   %stops the motor
+    pause(0.2)   % waits for it to stabilize (so that the motor actually stops)
+    offset(ID) = readRotation(ID);  %sets the lower limit (considering that the offset = 0 until now, which means the readRotation function still returns the actual value sent by the motor)
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 100);   %starts moving in the opposite direction
     i = 0;
     torque = 0;
-    while i < 30   %čaka, da se odlepi od spodnje meje(podobno kot je že opisano zgoraj)
-        torque = readTorque(ID);   %deluje enako kot zgoraj, samo obratna smer vrtenja
+    while i < 30   %waits to move away from the lower limit (similar to the above description)
+        torque = readTorque(ID);   %works the same as above, just in the opposite direction
         if torque < 60
             i = i + 1;
         else
             i = 0;
         end
     end
-    torque = 0;   %začne iskati zgornjo mejo 
-    while torque < 150   %začne iskati spodnjo mejo, čaka da se navor poveča nad minimalni predpisani navor
+    torque = 0;   %starts searching for the upper limit
+    while torque < 150   %starts searching for the upper limit, waits for the torque to increase above the minimum specified torque
         torque = readTorque(ID);
     end
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 0)   %motor se ustavi
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 0)   %stops the motor
     pause(0.2) %čaka, da se umiri
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 4294967295 - 100);  %začne se premikat
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 4294967295 - 100);  %starts moving
     i = 0;
-    while i < 30   %čaka, da ni več trenja(podobno kot že prej 2x zgoraj). Nočemo da je osnovni položaj prsta takrat, ko je ta zabit v srajnost, zato ga odmaknemo od te skrajnosti toliko, da ni več nezaželenega navora, ki bi motil kasneje ostale funkcije
+    while i < 30   %waits for no friction (similar to the previous two cases above). We don't want the basic finger position to be when it is stuck in the extreme, so we move it away from the extreme to avoid unwanted torque that would interfere with other functions later
         torque = readTorque(ID);
         if torque < 60
             i = i + 1;
@@ -230,88 +230,88 @@ function [] = calibrate(ID)  %kalibracija prstov -> prst se premakne v obe svoji
             i = 0;
         end
     end
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 0)   %motor se ustavi
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 0)   %stops the motor
     write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 64, 0);   %disable torque
-    write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 11, 4);   %nastavi Operating Mode na Extended Position Control Mode
+    write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 11, 4);   %set Operating Mode to Extended Position Control Mode
     write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 64, 1);   %enable torque
-    max(ID) = readRotation(ID);  %nastavi razliko med spodnjo in zgornjo mejo (tukaj ima funkcija readRotation že nastavljen spremenljivko offset, zato res meri od položaja 0 do do maksimalnega položaja, kar je pa res razlika med maksimalno in minimalno vrednostjo)
+    max(ID) = readRotation(ID);  %sets the difference between the lower and upper limits (here the readRotation function already has the offset variable set, so it really measures from position 0 to the maximum position, which is indeed the difference between the maximum and minimum values)
 end
 
 
 
-function [] = moveOne(ID, moveTo, speed)   %Premakne en prst na želeno pozicijo. Nastavimo ID motorja, želeno pozicijo (v odstotkih), opcijska je hitrost premika (v odstotkih)
-    global max    %deklarira globalne spremenljivke
+function [] = moveOne(ID, moveTo, speed)   %Moves one finger to the desired position. Set the motor ID, desired position (in percentages), optional speed (in percentages)
+    global max    %declares global variables
     global offset
     global port_num
     global PROTOCOL_VERSION
     global defaultSpeed
     switch nargin
-        case 2    %lahko vpišemo samo ID motorja in želeni položaj, hitrost se nastavni na osnovno hitrost
+        case 2    %you can enter only the motor ID and desired position, the speed is set to the default speed
             speed = defaultSpeed; 
-        case 3    %lahko vpišemo vse 3 možne parametre
+        case 3    %you can enter all 3 possible parameters
         otherwise
-            disp('Invalid number of inputs')   %če vpišemo neko drugo število parametrov, funkcija javi napako v konzolo
+            disp('Invalid number of inputs')   %if you enter another number of parameters, the function reports an error in the console
     end
-    position = max(ID) * (100 - moveTo) / 100 + offset(ID);   %pretvori pozicijo v odstotkih v pozicijo, ki jo razume motor. Upošteva tudi parametre kalibracije
+    position = max(ID) * (100 - moveTo) / 100 + offset(ID);   %converts the position in percentages to a position that the motor understands. It also considers calibration parameters
     if position < 0
-        position = position + 4294967296;   %motor razume le predznačen binarni zapis, zato moramo negativnemu številu prišteti še eno "periodo"
+        position = position + 4294967296;   %the motor understands only the signed binary representation, so we need to add one "period" to the negative number
     end
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 112, speed / 100 * 265);  %nastavi hitrost
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 116, position);  %nastavi pozicijo
-    pause(0.1);   %počaka, da se motor začne vrteti
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 112, speed / 100 * 265);  %sets the speed
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 116, position);  %sets the position
+    pause(0.1);   %waits for the motor to start rotating
     movement = 1;
-    while movement == 1   %ponavlja dokler je indikator premikanja 1
-        movement = read1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 122);   %bere stanje o premikanju, ki je 0 ali 1. Ker je program hitrejši od mehanike je potreben prejšnje čakanje
+    while movement == 1   %repeats while the movement indicator is 1
+        movement = read1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 122);   %reads the movement status, which is 0 or 1. Since the program is faster than the mechanics, previous waiting is needed
     end
-    %ko je konec zabke je dosežena želena pozicija in to je konec te funkcije
+    %when the movement is over, the desired position is reached, and this is the end of this function
 end
 
-                                                   %Prime objekt z enim prstom. Uporabnik določi ID motorja, želeni maksimalni navor (v odstotkih), opcijska je hitrost (v odstotkih)
-    function [] = grabOne(ID, maxTorque, speed)    %OPOZORILO: maksimalen želeni navor je mogoče nastaviti nad 100%, kar pa lahko vodi do poškodbe mehanike
-    global port_num    %nastavi globalne spremenljivke
+%Grabs an object with one finger. The user specifies the motor ID, the desired maximum torque (in percentages), the optional speed (in percentages)
+function [] = grabOne(ID, maxTorque, speed)    %WARNING: the maximum desired torque can be set above 100%, which may lead to mechanical damage
+    global port_num    %sets global variables
     global PROTOCOL_VERSION 
     global defaultSpeed
     switch nargin
-        case 2         %lahko vpišemo samo ID motorja in želeni položaj, hitrost se nastavni na osnovno hitrost
+        case 2         %you can enter only the motor ID and desired position, the speed is set to the default speed
             speed = defaultSpeed;
-        case 3         %lahko vpišemo vse 3 možne parametre
+        case 3         %you can enter all 3 possible parameters
         otherwise
-            disp('Invalid number of inputs')     %če vpišemo neko drugo število parametrov, funkcija javi napako v konzolo
+            disp('Invalid number of inputs')     %if you enter another number of parameters, the function reports an error in the console
     end
     write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 64, 0);   %disable torque
-    write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 11, 1);   %nastavi Operating Mode na Velocity control
+    write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 11, 1);   %set Operating Mode to Velocity control
     write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 64, 1);   %enable torque
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 4294967295 - speed / 100 * 265);  %začne se premikat
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 4294967295 - speed / 100 * 265);  %starts moving
     torque = 0;
-    pause(0.3);   %čaka da mine sunek navora preden se začne motor premikati s konstantno hitrostjo
-    while torque < maxTorque * 2.5     %čaka, da navor doseže želeno vrednost (2,5 je pretvorba iz odstotkov v navor)
+    pause(0.3);   %waits for the torque spike to pass before the motor starts moving at a constant speed
+    while torque < maxTorque * 2.5     %waits for the torque to reach the desired value (2.5 is the conversion from percentages to torque)
         torque = readTorque(ID);
     end
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 0);  %motor se ustavi
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 104, 0);  %stops the motor
     write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 64, 0);   %disable torque
-    write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 11, 4);   %nastavi Operating Mode na Position control
+    write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 11, 4);   %set Operating Mode to Position control
     write1ByteTxRx(port_num, PROTOCOL_VERSION , ID, 64, 1);   %enable torque
 end
 
 
 
-function [currentRotation] = readRotation(ID)     %prebere trenutno vrednost rotacije na motorju (pri tem upošteva parametre kalibracije)
-    global offset;      %deklarira globalne spremenljivke
+function [currentRotation] = readRotation(ID)     %reads the current rotation value on the motor (considers calibration parameters)
+    global offset;      %declares global variables
     global port_num;
     global PROTOCOL_VERSION ;
-    rotation = read4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 132);     %prebere rotacijo iz motorja
+    rotation = read4ByteTxRx(port_num, PROTOCOL_VERSION , ID, 132);     %reads the rotation from the motor
     if rotation > 2147483647
-        currentRotation = rotation - 4294967295 - offset(ID);      %če prebere negativno predznačeno število, ga najprej pretvori v navadno negativno desetiško število in nato upošteva offset
+        currentRotation = rotation - 4294967295 - offset(ID);      %if it reads a negative signed number, it first converts it to a normal negative decimal number and then considers the offset
     else
-        currentRotation = rotation - offset(ID);     %prebrani rotaciji odšteje offset
+        currentRotation = rotation - offset(ID);     %subtracts the offset from the read rotation
     end
 end
 
-function [torque] = readTorque(ID)   %prebere absolutno vrednost navora
-    global port_num;            %deklarira globalne spremenljivke
+function [torque] = readTorque(ID)   %reads the absolute torque value
+    global port_num;            %declares global variables
     global PROTOCOL_VERSION; 
-    readTorque = read2ByteTxRx(port_num, PROTOCOL_VERSION , ID, 126);    %prebere vrednost navora
-    if readTorque > 32767     %če je prebrani navor negativen v predznačenem številu, ga pretvori v pozitivno desetiško število, sicer pusti prebrani navor nespremenjen
+    readTorque = read2ByteTxRx(port_num, PROTOCOL_VERSION , ID, 126);    %reads the torque value
+    if readTorque > 32767     %if the read torque is negative in signed number, it converts it to a positive decimal number, otherwise leaves the read torque unchanged
        torque = 65535 - readTorque;
     else
        torque = readTorque;
@@ -319,60 +319,54 @@ function [torque] = readTorque(ID)   %prebere absolutno vrednost navora
 end
    
 
-%Funkcija grabAll prijema z vsemi motorji hkrati. Možno je vpisati ali samo
-%en navor, ali 3 navore, ali 3 navore in hitrost ali pa 3 navore in 3
-%hitrosti. Vse vrednosti so zapisane v odstotkih. Če katerega od 3 prstov
-%ne želimo premakniti, nastavimo hitrost ali pa navor na 0 (Bolje je 
-% nastaviti hitrost na nič, saj se v tem primeru motor sploh ne aktivira).
-
+%The function grabAll grabs with all motors at once. You can enter either just one torque value, or 3 torque values, or 3 torque values and speed, or 3 torque values and 3 speeds. All values are in percentages. If we don't want to move any of the 3 fingers, we set the speed or torque to 0 (It's better to set the speed to zero because in this case, the motor won't activate at all).
 function [] = grabAll(maxTorque1, maxTorque2, maxTorque3, speed1, speed2, speed3)    
-    global port_num             %deklarira globalne spremenljivke
+    global port_num             %declares global variables
     global PROTOCOL_VERSION 
     global defaultSpeed
     switch nargin
-        case 1   %če je vpisana samo ena vrednost, je to vrednost za maksimalni želeni navor pri prijemanju in se bo upoštevala na vseh motorjih. Hitrost motorjev bo nastavljena na osnovno hitrost
+        case 1   %if only one value is entered, this value represents the maximum desired torque for gripping and will be used on all motors. The speed of the motors will be set to the default speed
             maxTorque2 = maxTorque1;
             maxTorque3 = maxTorque1;
             speed1 = defaultSpeed;
             speed2 = defaultSpeed;
             speed3 = defaultSpeed;
-        case 3   %če so vpisane 3 vrednosti, so to vrednosti za maksimalen zaželeni navor za vsak motor posebej. Hitrost motorjev bo nastavljena na osnovno hitrost
+        case 3   %if 3 values are entered, these are the values for the maximum desired torque for each motor separately. The speed of the motors will be set to the default speed
             speed1 = defaultSpeed;
             speed2 = defaultSpeed;
             speed3 = defaultSpeed;
-        case 4   %če so vpisane 4 vrednosti, so prve 3 vrednosti za maksimalen zaželeni navor za vsak motor posebej. Zadnja vrednost je vrednost hitrosti motorjev in se upošteva na vseh motorjih
+        case 4   %if 4 values are entered, the first 3 values are the maximum desired torque for each motor separately. The last value is the speed value of the motors and will be used on all motors
             speed2 = speed1;
             speed3 = speed1;
-        case 6   %če je vpisanih 6 vrednosti, vsak motor dobi svojo vrednost želenega maksimalnega navora in hitrost premikanja
+        case 6   %if 6 values are entered, each motor gets its value of desired maximum torque and speed
         otherwise
-            disp('Invalid number of inputs')     %če vpišemo neko drugo število parametrov, funkcija javi napako v konzolo
+            disp('Invalid number of inputs')     %if you enter another number of parameters, the function reports an error in the console
     end
-    %Pripravi motorje na Velocity control, če je želena hitrost večja od 0.
-    %Če smo za kateri motor nastavili hitrost = 0, se ta motor ne bo
-    %nastavil za delovanje
+    %Prepares the motors for Velocity control if the desired speed is greater than 0.
+    %If we set the speed = 0 for any motor, this motor will not be set to operate
     if speed1 > 0
         write1ByteTxRx(port_num, PROTOCOL_VERSION , 1, 64, 0);   %disable torque
-        write1ByteTxRx(port_num, PROTOCOL_VERSION , 1, 11, 1);   %nastavi Operating Mode na Velocity control
+        write1ByteTxRx(port_num, PROTOCOL_VERSION , 1, 11, 1);   %set Operating Mode to Velocity control
         write1ByteTxRx(port_num, PROTOCOL_VERSION , 1, 64, 1);   %enable torque
-        write4ByteTxRx(port_num, PROTOCOL_VERSION , 1, 104, 4294967295 - speed1 / 100 * 264);  %začne se premikat
+        write4ByteTxRx(port_num, PROTOCOL_VERSION , 1, 104, 4294967295 - speed1 / 100 * 264);  %starts moving
         a = 0;
     else
         a = 1;
     end
     if speed2 > 0
         write1ByteTxRx(port_num, PROTOCOL_VERSION , 2, 64, 0);   %disable torque
-        write1ByteTxRx(port_num, PROTOCOL_VERSION , 2, 11, 1);   %nastavi Operating Mode na Velocity control
+        write1ByteTxRx(port_num, PROTOCOL_VERSION , 2, 11, 1);   %set Operating Mode to Velocity control
         write1ByteTxRx(port_num, PROTOCOL_VERSION , 2, 64, 1);   %enable torque
-        write4ByteTxRx(port_num, PROTOCOL_VERSION , 2, 104, 4294967295 - speed2 / 100 * 264);  %začne se premikat
+        write4ByteTxRx(port_num, PROTOCOL_VERSION , 2, 104, 4294967295 - speed2 / 100 * 264);  %starts moving
         b = 0;
     else
         b = 1;
     end
     if speed3 > 0
         write1ByteTxRx(port_num, PROTOCOL_VERSION , 3, 64, 0);   %disable torque
-        write1ByteTxRx(port_num, PROTOCOL_VERSION , 3, 11, 1);   %nastavi Operating Mode na Velocity control
+        write1ByteTxRx(port_num, PROTOCOL_VERSION , 3, 11, 1);   %set Operating Mode to Velocity control
         write1ByteTxRx(port_num, PROTOCOL_VERSION , 3, 64, 1);   %enable torque
-        write4ByteTxRx(port_num, PROTOCOL_VERSION , 3, 104, 4294967295 - speed3 / 100 * 264);  %začne se premikat
+        write4ByteTxRx(port_num, PROTOCOL_VERSION , 3, 104, 4294967295 - speed3 / 100 * 264);  %starts moving
         c = 0;
     else
         c = 1;
@@ -380,29 +374,29 @@ function [] = grabAll(maxTorque1, maxTorque2, maxTorque3, speed1, speed2, speed3
     torque1 = 0;
     torque2 = 0;
     torque3 = 0;
-    pause(0.3);  %počaka da je konec sunka navora
-    while a == 0 || b == 0 || c == 0    %a, b in c so indikatorji, če je bilo premikanje že zaključeno. Neaktivnim motorjem se še pred izvajanjem zanke nastavi ta parameter na 1.
-        torque1 = readTorque(1);   %prebere vse 3 navore
+    pause(0.3);  %waits for the torque spike to pass
+    while a == 0 || b == 0 || c == 0    %a, b, and c are indicators if the movement has already ended. Inactive motors are set to 1 before the loop starts.
+        torque1 = readTorque(1);   %reads all 3 torques
         torque2 = readTorque(2);
         torque3 = readTorque(3);
-        if torque1 >= maxTorque1 * 2.5 && a == 0    %čaka na želeni navor motorja, pri čemer mora biti motor še aktiven
-            write4ByteTxRx(port_num, PROTOCOL_VERSION , 1, 104, 0);  %ustavi motor
+        if torque1 >= maxTorque1 * 2.5 && a == 0    %waits for the desired motor torque, where the motor must still be active
+            write4ByteTxRx(port_num, PROTOCOL_VERSION , 1, 104, 0);  %stops the motor
             write1ByteTxRx(port_num, PROTOCOL_VERSION , 1, 64, 0);   %disable torque
-            write1ByteTxRx(port_num, PROTOCOL_VERSION , 1, 11, 4);   %nastavi Operating Mode na Velocity control
+            write1ByteTxRx(port_num, PROTOCOL_VERSION , 1, 11, 4);   %set Operating Mode to Velocity control
             write1ByteTxRx(port_num, PROTOCOL_VERSION , 1, 64, 1);   %enable torque
             a = 1;
         end 
         if torque2 >= maxTorque2 * 2.5 && b == 0    %čaka na želeni navor motorja, pri čemer mora biti motor še aktiven
-            write4ByteTxRx(port_num, PROTOCOL_VERSION , 2, 104, 0);  %ustavi motor
+            write4ByteTxRx(port_num, PROTOCOL_VERSION , 2, 104, 0);  %stops the motor
             write1ByteTxRx(port_num, PROTOCOL_VERSION , 2, 64, 0);   %disable torque
-            write1ByteTxRx(port_num, PROTOCOL_VERSION , 2, 11, 4);   %nastavi Operating Mode na Velocity control
+            write1ByteTxRx(port_num, PROTOCOL_VERSION , 2, 11, 4);   %set Operating Mode to Velocity control
             write1ByteTxRx(port_num, PROTOCOL_VERSION , 2, 64, 1);   %enable torque
             b = 1;
         end
         if torque3 >= maxTorque3 * 2.5 && c == 0    %čaka na želeni navor motorja, pri čemer mora biti motor še aktiven
-            write4ByteTxRx(port_num, PROTOCOL_VERSION , 3, 104, 0);  %ustavi motor
+            write4ByteTxRx(port_num, PROTOCOL_VERSION , 3, 104, 0);  %stops the motor
             write1ByteTxRx(port_num, PROTOCOL_VERSION , 3, 64, 0);   %disable torque
-            write1ByteTxRx(port_num, PROTOCOL_VERSION , 3, 11, 4);   %nastavi Operating Mode na Velocity control
+            write1ByteTxRx(port_num, PROTOCOL_VERSION , 3, 11, 4);   %set Operating Mode to Velocity control
             write1ByteTxRx(port_num, PROTOCOL_VERSION , 3, 64, 1);   %enable torque
             c = 1;
         end
@@ -411,41 +405,34 @@ end
 
 
 
-%Funkcija moveALL premakne vse motorje v želeni položaj. Lahko vpišemo le
-%en položaj, ki premakne vse motorje v isti položaj, 3 položaje, za vsak
-%motor posebej in lahko določimo še hitrost premikanja še s 4. vpisano
-%vrednostjo. Vsi parametri so vpisani v odstotkih. Zapomni si: Možno je
-%nastaviti le eno hitrost, saj funkcija določi to hitrost le prstu, ki mora
-%izvesti največji premik, ostalim prstom pa določi novo hitrost, ki je
-%manjša ali enaka želeni hitrosti na način, da se vsi motorji začnejo in
-%končajo premikati naenkrat
+%The function moveAll moves all motors to the desired position. You can enter only one position, which moves all motors to the same position, 3 positions for each motor separately, and you can also specify the speed of movement with the 4th entered value. All parameters are entered in percentages. Remember: Only one speed can be set, as the function determines this speed only for the finger that needs to make the most significant move, and sets a new speed for the other fingers, which is less than or equal to the desired speed, so that all motors start and finish moving at the same time.
 function [] = moveAll(position1, position2, position3, speed)    
-    global max              %deklarira globalne spremenljivke
+    global max              %declares global variables
     global offset
     global port_num
     global PROTOCOL_VERSION 
     global defaultSpeed
     switch nargin
-        case 1     %če je vpisana le ena vrednost, ta vrednost predstavlja želeni položaj za vse prste. Hitrost je nastavljena na osnovno hitrost
+        case 1     %if only one value is entered, this value represents the desired position for all fingers. The speed is set to the default speed
             position2 = position1;
             position3 = position1;
             speed = defaultSpeed;
-        case 3     %Če so vpisane 3 vrednosti, so to 3 vrednosti položajev za vsak prst posebej. Hitrost je nastavljena na osnovno hitrost
+        case 3     %If 3 values are entered, these are the 3 position values for each finger separately. The speed is set to the default speed
             speed = defaultSpeed;
-        case 4     %Če so vpisane 3 vrednosti, so to 3 vrednosti položajev za vsak prst posebej. 4. vrednost nastavi hitrost premikanja prstov
+        case 4     %If 4 values are entered, the first 3 values are the position values for each finger separately. The 4th value sets the speed of movement of the fingers
         otherwise
-            disp('Invalid number of inputs')            %če vpišemo neko drugo število parametrov, funkcija javi napako v konzolo
+            disp('Invalid number of inputs')            %if you enter another number of parameters, the function reports an error in the console
     end
-    location1 = max(1) * (100 - position1) / 100 + offset(1);            %pretvori pozicijo v odstotkih v pozicijo, ki jo razume motor. Upošteva tudi parametre kalibracije
+    location1 = max(1) * (100 - position1) / 100 + offset(1);            %converts the position in percentages to a position that the motor understands. It also considers calibration parameters
     location2 = max(2) * (100 - position2) / 100 + offset(2);
     location3 = max(3) * (100 - position3) / 100 + offset(3);
-    currentLocation1 = readRotation(1) + offset(1);      %prebere trenutno lokacijo prsta (Prištet je offset, ker so položaji iz prejšnih vrstic že pripravljeni za premik motorjev, readRotation pa sicer bere položaj prsta in že upošteva offset. Po domače: ali je in zgornjim vrsticam in tem vrsticam prištet offset ali pa obema ni)
+    currentLocation1 = readRotation(1) + offset(1);      %reads the current finger location (The offset is added because the positions in the previous lines are already prepared for motor movement, readRotation already considers the offset. Simply put: either the offset is added in the previous lines and these lines, or it isn't in both.)
     currentLocation2 = readRotation(2) + offset(2); 
     currentLocation3 = readRotation(3) + offset(3); 
-    delta1 = abs(location1 - currentLocation1);     %izračuna spremembo položaja med trenutnim in končnim položajem
+    delta1 = abs(location1 - currentLocation1);     %calculates the change in position between the current and final position
     delta2 = abs(location2 - currentLocation2); 
     delta3 = abs(location3 - currentLocation3); 
-    if delta1 >= delta2 && delta1 >= delta3       %najde prst, ki mora opraviti največjo spremembo položaja in mu priredi želeno hitrost. Ostalima dvema prstoma proporcionalno s spremembama položaja določi hitrost
+    if delta1 >= delta2 && delta1 >= delta3       %finds the finger that needs to make the most significant move and assigns it the desired speed. The other two fingers are proportionally assigned a speed based on the change in position
         speed1 = speed;
         speed2 = delta2 / delta1 * speed;
         speed3 = delta3 / delta1 * speed;
@@ -458,7 +445,7 @@ function [] = moveAll(position1, position2, position3, speed)
         speed1 = delta1 / delta3 * speed;
         speed2 = delta2 / delta3 * speed;
     end
-    if location1 < 0    %Če je lokacija negativna, mu prištejemo "periodo" ker motor razume le binarna predznačena števila
+    if location1 < 0    %If the location is negative, add "period" because the motor understands only binary signed numbers
         location1 = location1 + 4294967296;
     end
     if location2 < 0
@@ -467,40 +454,31 @@ function [] = moveAll(position1, position2, position3, speed)
     if location3 < 0
         location3 = location3 + 4294967296;
     end
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , 1, 112, speed1 / 100 * 265);  %nastavi hitrost
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , 2, 112, speed2 / 100 * 265);  %nastavi hitrost
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , 3, 112, speed3 / 100 * 265);  %nastavi hitrost
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , 1, 116, location1);  %nastavi pozicijo
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , 2, 116, location2);  %nastavi pozicijo
-    write4ByteTxRx(port_num, PROTOCOL_VERSION , 3, 116, location3);  %nastavi pozicijo
-    pause(0.1);   %čaka, da se motorji začnejo premikati (podobno kot pri moveOne)
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , 1, 112, speed1 / 100 * 265);  %sets the speed
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , 2, 112, speed2 / 100 * 265);  %sets the speed
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , 3, 112, speed3 / 100 * 265);  %sets the speed
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , 1, 116, location1);  %sets the position
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , 2, 116, location2);  %sets the position
+    write4ByteTxRx(port_num, PROTOCOL_VERSION , 3, 116, location3);  %sets the position
+    pause(0.1);   %waits for the motors to start moving (similar to moveOne)
     movement1 = 1;
     movement2 = 1;
     movement3 = 1;
-    while movement1 == 1 || movement2 == 1 || movement3 == 1    %čaka, da se vsi motorji nehajo premikati
+    while movement1 == 1 || movement2 == 1 || movement3 == 1    %waits for all motors to stop moving
         movement1 = read1ByteTxRx(port_num, PROTOCOL_VERSION , 1, 122);
         movement2 = read1ByteTxRx(port_num, PROTOCOL_VERSION , 2, 122);
         movement3 = read1ByteTxRx(port_num, PROTOCOL_VERSION , 3, 122);
     end
 end
 
-%Pri kalibraciji vsak motor dobi svoj max oz. svojo razliko med maksimalnim
-%in minimalnim položajem. Zaradi različnih razlogov so te max-i med sabo
-%lahko zelo različni. To pa lahko pomeni, da se lahko kasneje prijemalo 
-% obnaša nekoliko čudno npr. nastavimo enak položaj za vse prste, potem pa 
-% se prsti ne postavijo v enak položaj. To popravita funkciji 
-% calculateEqualMinimalDelata in calculateEqualDelta, ki nastavita vsem 
-% prstom enak max. Funkcije so potrebne saj je položaj 0 prstov definiran, 
-% ko je ta najbolj zaprt, 0% pri premikih pa je, ko je prst najbolj odprt. 
-% Tako ne moremo le nastaviti vseh max-ov na isto vrednost, temveč moramo 
-% tudi primerno spremeniti offset-e.  
-function [] = calculateEqualMinimalMax()     %nastavi vse max-e na max od prsta z najmanjšo vrednostjo max-a. 
-    global offset           %deklarira globalne spremenljivke
+%During calibration, each motor gets its max or its difference between the maximum and minimum positions. For various reasons, these maxes can be very different from each other. This can mean that later the gripper may behave somewhat oddly, e.g., if we set the same position for all fingers, the fingers may not be in the same position. The functions calculateEqualMinimalMax and calculateEqualMax correct this by setting the same max for all fingers. These functions are necessary because the 0 position of the fingers is defined when they are most closed, and 0% during movements is when the finger is most open. Thus, we cannot simply set all maxes to the same value but must also appropriately change the offsets.
+function [] = calculateEqualMinimalMax()     %sets all maxes to the max of the finger with the smallest max value. 
+    global offset           %declares global variables
     global max
-    if max(1) <= max(2) && max(1) <= max(3)     %išče najmanjši max
-        offset(2) = offset(2) + max(2) - max(1);    %offset ostalih dveh prstov spremeni za razliko med starim in novim max-om
+    if max(1) <= max(2) && max(1) <= max(3)     %finds the smallest max
+        offset(2) = offset(2) + max(2) - max(1);    %changes the offsets of the other two fingers by the difference between the old and new max
         offset(3) = offset(3) + max(3) - max(1);
-        max(2) = max(1);            %ostale maxe nastavi na novi max
+        max(2) = max(1);            %sets the other maxes to the new max
         max(3) = max(1);
     elseif max(2) <= max(1) && max(2) <= max(3)
         offset(1) = offset(1) + max(1) - max(2);
@@ -515,13 +493,13 @@ function [] = calculateEqualMinimalMax()     %nastavi vse max-e na max od prsta 
     end
 end
 
-function [] = calculateEqualMax(newMax)    %nastavi vse max-e na želeni max (običajen Max je okrog 24000) 
-    global offset           %deklarira globalne spremenljivke
+function [] = calculateEqualMax(newMax)    %sets all maxes to the desired max (typical max is around 24000)
+    global offset           %declares global variables
     global max
-    offset(1) = offset(1) + max(1) - newMax;   %offset-e vseh prstov spremeni za razliko med starim in novim max-om     
+    offset(1) = offset(1) + max(1) - newMax;   %changes the offsets of all fingers by the difference between the old and new max   
     offset(2) = offset(2) + max(2) - newMax;
     offset(3) = offset(3) + max(3) - newMax;
-    max(1) = newMax;          %maxe nastavi na novi max
+    max(1) = newMax;          %sets the maxes to the new max
     max(2) = newMax;
     max(3) = newMax;
  end 
