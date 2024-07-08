@@ -102,59 +102,40 @@ else
 end
 % Main
 
-%{
-calibrate(2)
-offset
-max
-%}
-
-%{
-grabOneReadTorque(2, 50)
-pause(20)
-moveOne(2, 0)
-%}
-
-%{
 tic
 calibrate(2)
 toc
 tic
 moveOne(2, 50, 100)
 t0 = toc
-zapiranje = zeros(1, 100)
-odpiranje = zeros(1, 100)
-navor = zeros(1, 100)
-rotacija = zeros(1, 100)
+closing = zeros(1, 100)
+opening = zeros(1, 100)
+torque = zeros(1, 100)
+rotation = zeros(1, 100)
 j = 1;
 while j <= 10
     i = 1;
     while i <= 10
         tic
-        navor(10 * j + i - 10) = grabOneReadTorque(2, 100, 100)
-        zapiranje(10 * j + i - 10) = toc
-        rotacija(10 * j + i - 10) = readRotation(2)
+        torque(10 * j + i - 10) = grabOneReadTorque(2, 100, 100)
+        closing(10 * j + i - 10) = toc
+        rotation(10 * j + i - 10) = readRotation(2)
         tic
         moveOne(2, 50, 100)
-        odpiranje(10 * j + i - 10) = toc
+        opening(10 * j + i - 10) = toc
         i = i + 1
     end
     j = j + 1
     pause(30)
 end
 moveOne(2, 0, 100)
-navor
-rotacija
-%}
+torque
+rotation
 
-% end Main
-
-grabOne(2, 50) %prime s prstom št. 2 in navorom 50%. Hitrost premikanja osnovna
-grabOne(1, 70, 100) %prime s prstom št. 1, navorom 70% in hitrostjo 100%
-
-xlswrite("testni_objekt_7_rotacija.xlsx",rotacija)
-xlswrite("testni_objekt_7_navor.xlsx",navor)
-xlswrite("testni_objekt_7_odpiranje.xlsx",odpiranje)
-xlswrite("testni_objekt_7_zapiranje.xlsx",zapiranje)
+xlswrite("rotation.xlsx",rotation)
+xlswrite("torque.xlsx",torque)
+xlswrite("opening.xlsx",opening)
+xlswrite("closing.xlsx",closing)
 t0
 %}
 
