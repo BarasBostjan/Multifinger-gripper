@@ -16,8 +16,8 @@
 | Central linkage 1                                              |    1     | PLA            |
 | Central linkage 2                                              |    1     | PLA            |
 | Upper linkage                                                  |    1     | PLA            |
-| 91290A100_Black-Oxide Alloy Steel Socket Head Screw            |    8     | Steel          |
-| 91280A144_Medium-Strength Class 8.8 Steel Hex Head Screw       |    1     | Steel          |
-| 91290A012_Black-Oxide, M2 x 0.4 mm Thread, 5 mm Long           |    4     | Steel          |
+| M2,5X5 Socket Head Screw (91290A100)                           |    8     | Steel          |
+| M4X25 Hex Head Screw (91280A144)                               |    1     | Steel          |
+| M2X5 Socket Head Screw 91290A012                               |    4     | Steel          |
 | Rod 250 mm length 2mm diameter                                 |    1     | Stainless Steel|
 | Rubber pads                                                    |    3     | rubber         |
