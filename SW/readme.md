@@ -106,7 +106,7 @@ These lists can be defined in the basic settings (see [Basic Settings](#basic-se
 
 It is often desirable for all fingers to have the same extreme positions. Some configurations result in fingers being calibrated to very similar extreme positions, while others may result in significantly different positions. To address this issue, the functions `calculateEqualMinimalMax` or `calculateEqualMax` can be used.
 
-- The function `calculateEqualMinimalMax` does not take any input variables and does not return any values. When called, it modifies the offset and `max` lists to set the difference between the maximum and minimum positions of all fingers to the smallest difference between the maximum and minimum positions of any finger from the previous calibration. If executed correctly, the `max` list should contain identical values. After executing this function, the fingers will still have the same positions when fully open, but only the most closed positions of the fingers will change. This function is usually called immediately after finger calibration:
+- The function `calculateEqualMinimalMax` does not take any input variables and does not return any values. When called, it modifies the `offset` and `max` lists to set the difference between the maximum and minimum positions of all fingers to the smallest difference between the maximum and minimum positions of any finger from the previous calibration. If executed correctly, the `max` list should contain identical values. After executing this function, the fingers will still have the same positions when fully open, but only the most closed positions of the fingers will change. This function is usually called immediately after finger calibration:
 
 ```matlab
 calibrate(1)
