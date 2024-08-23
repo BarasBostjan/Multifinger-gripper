@@ -54,8 +54,6 @@ The `GripperControl.m` program operates as follows:
 - The main part of the program, marked with the comment "Main," contains the commands or functions that control the gripper.
   
 - After the main section, the motors are turned off, and the connection between the motors and MATLAB is terminated.
-  
-- At the end of the program, all functions used to control the gripper are declared.
 
 ## Basic Settings
 
