@@ -57,7 +57,7 @@ The `GripperControl.m` program operates as follows:
 
 ## Basic Settings
 
-It is possible to change the operating mode and maximum rotation speed of individual motors. Since the program's functions rely on these settings, it is advisable to leave them as they are. The `offset` and `max` lists can be set after all fingers have been calibrated to avoid recalibrating every time the program runs (except in the cases mentioned below). The last parameter that can be set here is `defaultSpeed`, which determines the speed at which the motors will rotate during movement and grasping functions if no specific speed is provided. The value ranges from 0 to 100, indicating the percentage of the motor's rotation speed, where 0% means the motor is stationary, and 100% represents the maximum rotation speed.
+It is possible to change the operating mode and maximum rotation speed of individual motors. Since the program's functions rely on these settings, it is advisable to leave them as they are. The `offset` and `max` lists can be set after all fingers have been calibrated to avoid recalibrating every time the program runs (except in the cases mentioned below). The last parameter that can be set here is `defaultSpeed`, which determines the speed at which the motors will rotate during movement and grasping functions if no specific speed is provided. The value ranges from 0 to 100, indicating the percentage of the motor's rotation speed, where 0 % means the motor is stationary, and 100 % represents the maximum rotation speed.
 
 Parameter settings between lines 81 and 87 of the MATLAB program:
 
@@ -139,11 +139,11 @@ moveOne(ID, moveTo, speed)
 
 - The ID is entered as the number 1, 2, or 3.
   
-- The final angles are recorded as a number between 0 and 100, representing the percentage of the finger's closure, where 0% is a fully open finger and 100% is a fully closed finger.
+- The final angles are recorded as a number between 0 and 100, representing the percentage of the finger's closure, where 0 % is a fully open finger and 100 % is a fully closed finger.
   
 - If the third input variable is not entered, the function will determine the speed based on the global variable defaultSpeed, defined in the basic settings (see [Basic Settings](#basic-settings)).
   
-- To control the finger's speed, enter the third input variable as a number between 0 and 100, representing the percentage of the motor's rotation speed, where 0% is a stationary motor, and 100% is the maximum rotation speed of the motor.
+- To control the finger's speed, enter the third input variable as a number between 0 and 100, representing the percentage of the motor's rotation speed, where 0 % is a stationary motor, and 100 % is the maximum rotation speed of the motor.
 
 The following MATLAB code demonstrates the use of the moveOne function:
 
@@ -177,7 +177,7 @@ moveAll(30)
 moveAll(30, 50, 70)
 moveAll(30, 50, 70, 80)
 ```
-The first line of code closes all fingers to 30%, with the speed determined by the basic settings. The second line of code closes the first finger to 30%, the second finger to 50%, and the third finger to 70%, with the speed determined by the basic settings. The third line closes all fingers to the same angles as the previous line but at 80% speed.
+The first line of code closes all fingers to 30 %, with the speed determined by the basic settings. The second line of code closes the first finger to 30 %, the second finger to 50 %, and the third finger to 70 %, with the speed determined by the basic settings. The third line closes all fingers to the same angles as the previous line but at 80 % speed.
 
 ## Grasping
 
@@ -198,11 +198,11 @@ grabOne(ID, torque, speed)
   
 - The ID is entered as the number 1, 2, or 3.
   
-- The motor torque is recorded as a number between 0 and 100, representing the percentage of the maximum allowable motor torque, where 0% means the motor exerts no torque and 100% means the motor exerts the maximum allowable torque.
+- The motor torque is recorded as a number between 0 and 100, representing the percentage of the maximum allowable motor torque, where 0 % means the motor exerts no torque and 100 % means the motor exerts the maximum allowable torque.
   
 - If the third input variable is not entered, the function will determine the speed based on the global variable `defaultSpeed`, defined in the basic settings (see [Basic Settings](#basic-settings)).
   
-- To control the finger's speed, enter the third input variable as a number between 0 and 100, representing the percentage of the motor's rotation speed, where 0% is a stationary motor, and 100% is the maximum rotation speed of the motor.
+- To control the finger's speed, enter the third input variable as a number between 0 and 100, representing the percentage of the motor's rotation speed, where 0 % is a stationary motor, and 100 % is the maximum rotation speed of the motor.
 
 The function works by gradually closing the finger until the measured torque on the motor exceeds the desired torque. At that point, the motor stops, and the finger remains stationary.
 
@@ -256,7 +256,7 @@ grabAll(40, 50, 50, 50, 50, 0)
 
 In both of the above examples, we grip with the first two fingers while the third finger remains stationary. In the first line of MATLAB code, the third motor's torque is set to 0, while in the second line, the third motor's speed is set to 0.
 
-When setting the desired maximum torque, ensure that it is not set too low. The motor exerts some torque even when it is just moving freely. A general rule of thumb is that this value should be set to at least 30%, otherwise, the motor may stop immediately. At the upper end, nothing limits the user from setting the desired maximum torque above 100%. The motors driving the fingers are strong enough to generate even more than 300% of the maximum allowable torque, but this would likely result in mechanical failure (e.g., the worm gear could break). 100% was chosen in this MATLAB program based on experience with the fingers and represents a confident value at which the fingers should never be damaged. It is possible to go above 100%, but there is no guarantee that the finger will remain undamaged.
+When setting the desired maximum torque, ensure that it is not set too low. The motor exerts some torque even when it is just moving freely. A general rule of thumb is that this value should be set to at least 30 %, otherwise, the motor may stop immediately. At the upper end, nothing limits the user from setting the desired maximum torque above 100 %. The motors driving the fingers are strong enough to generate even more than 300% of the maximum allowable torque, but this would likely result in mechanical failure (e.g., the worm gear could break). 100 % was chosen in this MATLAB program based on experience with the fingers and represents a confident value at which the fingers should never be damaged. It is possible to go above 100 %, but there is no guarantee that the finger will remain undamaged.
 
 ## Other Functions
 
