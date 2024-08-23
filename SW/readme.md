@@ -38,9 +38,9 @@ Next, all gripper motors must be correctly connected. The motors are connected i
 
 The program was written using MATLAB version `R2022b` and is seperated into the folowing parts:
 
-- `GripperControl.m' which is the main program for gripper control.
+- `GripperControl.m`GripperControl.m` which is the main program for gripper control.
 
--  `Functions_lib` is a library that contains all the necesary functions that are used in `GripperControl.m`
+-  `functions_lib` is a library that contains all the necesary functions that are used in `GripperControl.m`
 
 The `GripperControl.m` program operates as follows:
 - Between lines 1 and 30, the program loads the necessary libraries, stores the addresses used by the motors, and prepares to connect the motors to MATLAB. These addresses are only valid for DYNAMIXEL XL430-W250 motors and should not be changed for the program to function correctly.
