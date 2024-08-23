@@ -98,7 +98,7 @@ calibrate(3)
 
 The `offset` and `max` lists store motor calibration data. The `offset` list contains motor rotations at the most closed position of the finger, while the `max` list contains data on the difference between the motor rotation at the most closed and most open positions of the finger.
 
-These lists can be defined in the basic MATLAB program settings (see Basic Settings). Calibration can be performed once, and the calibration parameters can then be entered into the basic settings. If the program is run multiple times, the fingers do not need to be recalibrated (unless the motors have been powered off or the gripper configuration has changed).
+These lists can be defined in the basic MATLAB program settings (see [Basic Settings](#basic-settings)). Calibration can be performed once, and the calibration parameters can then be entered into the basic settings. If the program is run multiple times, the fingers do not need to be recalibrated (unless the motors have been powered off or the gripper configuration has changed).
 
 ### Manipulating Calibration Parameters
 
@@ -139,7 +139,7 @@ moveOne(ID, moveTo, speed)
   
 - The final angles are recorded as a number between 0 and 100, representing the percentage of the finger's closure, where 0% is a fully open finger and 100% is a fully closed finger.
   
-- If the third input variable is not entered, the function will determine the speed based on the global variable defaultSpeed, defined in the basic settings (see Basic Settings).
+- If the third input variable is not entered, the function will determine the speed based on the global variable defaultSpeed, defined in the basic settings (see [Basic Settings](#basic-settings)).
   
 - To control the finger's speed, enter the third input variable as a number between 0 and 100, representing the percentage of the motor's rotation speed, where 0% is a stationary motor, and 100% is the maximum rotation speed of the motor.
 
@@ -164,7 +164,7 @@ moveAll(move1To, move2To, move3To, speed)
 
 - If only one input variable is entered into the function, it assumes that all three fingers should be moved to the same angles. As with the moveOne function, this value is entered as a number between 0 and 100, representing the percentage of the maximum angle. The fingers will move at a speed determined by the global variable `defaultSpeed`.
 
-- If three input variables are entered into the function, each finger will be moved to its specified angle. From left to right, the variables represent the desired angles for fingers with IDs 1, 2, and 3. In this case, the function will respect the speed value recorded in the global variable `defaultSpeed` (see Basic Settings). The function ensures that all fingers start and stop moving simultaneously. This means that if the fingers need to move different distances, the motor speeds will not be the same. The finger that needs to move the farthest will move at the default speed, while the other two fingers will move more slowly in proportion to the requirement for simultaneous movement.
+- If three input variables are entered into the function, each finger will be moved to its specified angle. From left to right, the variables represent the desired angles for fingers with IDs 1, 2, and 3. In this case, the function will respect the speed value recorded in the global variable `defaultSpeed` (see [Basic Settings](#basic-settings)). The function ensures that all fingers start and stop moving simultaneously. This means that if the fingers need to move different distances, the motor speeds will not be the same. The finger that needs to move the farthest will move at the default speed, while the other two fingers will move more slowly in proportion to the requirement for simultaneous movement.
 
 - If four input variables are entered into the function, it will behave the same as when three variables are entered, except that in this case, the fourth variable determines the speed of the finger movement. The function will take the value entered in the fourth position, which must be recorded as a number between 0 and 100, representing the percentage of the maximum possible motor rotation speed. As with the three-variable case, only the finger that needs to move the farthest will move at the entered speed, while the other two fingers will move more slowly in proportion to the requirement for simultaneous movement.
 
@@ -198,7 +198,7 @@ grabOne(ID, torque, speed)
   
 - The motor torque is recorded as a number between 0 and 100, representing the percentage of the maximum allowable motor torque, where 0% means the motor exerts no torque and 100% means the motor exerts the maximum allowable torque.
   
-- If the third input variable is not entered, the function will determine the speed based on the global variable `defaultSpeed`, defined in the basic settings (see Basic Settings).
+- If the third input variable is not entered, the function will determine the speed based on the global variable `defaultSpeed`, defined in the basic settings (see [Basic Settings](#basic-settings)).
   
 - To control the finger's speed, enter the third input variable as a number between 0 and 100, representing the percentage of the motor's rotation speed, where 0% is a stationary motor, and 100% is the maximum rotation speed of the motor.
 
@@ -224,7 +224,7 @@ grabAll(torque1, torque2, torque3, speedAll)
 grabAll(torque1, torque2, torque3, speed1, speed2, speed3)
 ```
 
-- If only one input variable is entered into the function, it assumes that all fingers should grip with the same desired maximum torque on all motors. Enter the desired maximum torque value as the sole input variable. The value must be recorded as a number between 0 and 100, which, similar to the `grabOne` function, determines the maximum desired torque value as a percentage of the maximum allowable torque. The fingers will move at a speed determined by the global variable `defaultSpeed` (see Basic Settings). The function begins closing all fingers simultaneously. When the measured torque on any finger exceeds the desired torque, that motor stops, and the finger remains stationary. This action does not affect the other fingers, which can continue moving until all fingers stop due to the conditions mentioned above. The function terminates when all fingers stop. If you want to grip with only two or just one finger, enter a value of 0 for the torque of the motor you do not want to move.
+- If only one input variable is entered into the function, it assumes that all fingers should grip with the same desired maximum torque on all motors. Enter the desired maximum torque value as the sole input variable. The value must be recorded as a number between 0 and 100, which, similar to the `grabOne` function, determines the maximum desired torque value as a percentage of the maximum allowable torque. The fingers will move at a speed determined by the global variable `defaultSpeed` (see [Basic Settings](#basic-settings)). The function begins closing all fingers simultaneously. When the measured torque on any finger exceeds the desired torque, that motor stops, and the finger remains stationary. This action does not affect the other fingers, which can continue moving until all fingers stop due to the conditions mentioned above. The function terminates when all fingers stop. If you want to grip with only two or just one finger, enter a value of 0 for the torque of the motor you do not want to move.
 
 - If three input variables are entered into the function, it will behave the same as with one input variable, except that each motor will stop rotating at its specified maximum torque. From left to right, the three maximum desired torques for motors with IDs 1, 2, and 3 are specified. For each of the three variables, enter a value between 0 and 100, the same as in the previous case and similar to the `grabOne` function. The fingers will move at a speed determined by the global variable `defaultSpeed`.
 
