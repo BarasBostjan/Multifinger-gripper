@@ -38,7 +38,7 @@ Next, all gripper motors must be correctly connected. The motors are connected i
 
 The program was written using MATLAB version `R2022b` and is seperated into the folowing parts:
 
-- `GripperControl.m`GripperControl.m` which is the main program for gripper control.
+- `GripperControl.m` which is the main program for gripper control.
 
 -  `functions_lib` is a library that contains all the necesary functions that are used in `GripperControl.m`
 
