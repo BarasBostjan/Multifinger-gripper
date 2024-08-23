@@ -145,7 +145,7 @@ moveOne(ID, moveTo, speed)
   
 - To control the finger's speed, enter the third input variable as a number between 0 and 100, representing the percentage of the motor's rotation speed, where 0 % is a stationary motor, and 100 % is the maximum rotation speed of the motor.
 
-The following MATLAB code demonstrates the use of the moveOne function:
+The following MATLAB code demonstrates the use of the `moveOne` function:
 
 ```matlab
 moveOne(2, 50)
@@ -156,7 +156,7 @@ The first line closes finger number 2 to 50 %, with the speed determined by the 
 
 ### Moving Multiple Fingers Simultaneously
 
-To move multiple fingers to specific angles simultaneously, use the moveAll function. This function can accept 1, 3, or 4 input variables and is defined as follows:
+To move multiple fingers to specific angles simultaneously, use the `moveAll` function. This function can accept 1, 3, or 4 input variables and is defined as follows:
 
 ```matlab
 moveAll(moveAllTo)
@@ -164,13 +164,13 @@ moveAll(move1To, move2To, move3To)
 moveAll(move1To, move2To, move3To, speed)
 ```
 
-- If only one input variable is entered into the function, it assumes that all three fingers should be moved to the same angles. As with the moveOne function, this value is entered as a number between 0 and 100, representing the percentage of the maximum angle. The fingers will move at a speed determined by the global variable `defaultSpeed`.
+- If only one input variable is entered into the function, it assumes that all three fingers should be moved to the same angles. As with the `moveOne` function, this value is entered as a number between 0 and 100, representing the percentage of the maximum angle. The fingers will move at a speed determined by the global variable `defaultSpeed`.
 
 - If three input variables are entered into the function, each finger will be moved to its specified angle. From left to right, the variables represent the desired angles for fingers with IDs 1, 2, and 3. In this case, the function will respect the speed value recorded in the global variable `defaultSpeed` (see [Basic Settings](#basic-settings)). The function ensures that all fingers start and stop moving simultaneously. This means that if the fingers need to move different distances, the motor speeds will not be the same. The finger that needs to move the farthest will move at the default speed, while the other two fingers will move more slowly in proportion to the requirement for simultaneous movement.
 
 - If four input variables are entered into the function, it will behave the same as when three variables are entered, except that in this case, the fourth variable determines the speed of the finger movement. The function will take the value entered in the fourth position, which must be recorded as a number between 0 and 100, representing the percentage of the maximum possible motor rotation speed. As with the three-variable case, only the finger that needs to move the farthest will move at the entered speed, while the other two fingers will move more slowly in proportion to the requirement for simultaneous movement.
 
-The following MATLAB code demonstrates the use of the moveAll function:
+The following MATLAB code demonstrates the use of the `moveAll` function:
 
 ```matlab
 moveAll(30)
@@ -234,7 +234,7 @@ grabAll(torque1, torque2, torque3, speed1, speed2, speed3)
 
 - If six input variables are entered into the function, it will behave the same as with three input variables, except that now the last three variables determine the speeds of the fingers' movements. The function takes the values entered in the last three positions instead of the global variable `defaultSpeed`, arranged from left to right as the speeds for motors with IDs 1, 2, and 3. The values must be recorded as a number between 0 and 100, representing the percentage of the maximum possible motor rotation speed.
 
-The following MATLAB code demonstrates the use of the grabAll function:
+The following MATLAB code demonstrates the use of the `grabAll` function:
 
 ```matlab
 grabAll(30)
