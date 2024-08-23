@@ -213,7 +213,7 @@ grabOne(2, 50)
 grabOne(1, 70, 100)
 ```
 
-The first line of code grips with finger number 2 at 50 % torque, with the speed determined by the basic settings. The second line of code grips with finger number 1 at 70 % torque and 100 % speed.
+The first line of code grasps with finger number 2 at 50 % torque, with the speed determined by the basic settings. The second line of code grasps with finger number 1 at 70 % torque and 100 % speed.
 
 ### Grasping with Multiple Fingers Simultaneously
 
@@ -243,7 +243,7 @@ grabAll(30, 50, 70, 80)
 grabAll(30, 50, 70, 20, 60, 80)
 ```
 
-The first line of code grips with all fingers at 30 % torque, with the speed determined by the basic settings. The second line grips with 30 % torque on the first finger, 50 % on the second finger, and 70 % on the third finger, with the speed determined by the basic settings. The third line grips with the same torques as the previous line, but this time the fingers move at 80 % speed. The last line grips with the same torque as the previous two lines, but now the first motor moves at 20 % speed, the second at 60 % speed, and the third at 80 % speed.
+The first line of code grasps with all fingers at 30 % torque, with the speed determined by the basic settings. The second line grasps with 30 % torque on the first finger, 50 % on the second finger, and 70 % on the third finger, with the speed determined by the basic settings. The third line grasps with the same torques as the previous line, but this time the fingers move at 80 % speed. The last line grasps with the same torque as the previous two lines, but now the first motor moves at 20 % speed, the second at 60 % speed, and the third at 80 % speed.
 
 ### Practical Tips for Grasping Functions
 
