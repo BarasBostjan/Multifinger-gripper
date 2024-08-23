@@ -16,10 +16,10 @@ This document provides instructions for using a MATLAB program designed to contr
 5. [Moving the Gripper Fingers](#moving-the-gripper-fingers)
    1. [Moving a Single Finger](#moving-a-single-finger)
    2. [Moving Multiple Fingers Simultaneously](#moving-multiple-fingers-simultaneously)
-6. [Gripping](#gripping)
-   1. [Gripping with a Single Finger](#gripping-with-a-single-finger)
-   2. [Gripping with Multiple Fingers Simultaneously](#gripping-with-multiple-fingers-simultaneously)
-   3. [Practical Tips for Gripping Functions](#practical-tips-for-gripping-functions)
+6. [Grasping](#grasping)
+   1. [Grasping with a Single Finger](#grasping-with-a-single-finger)
+   2. [Grasping with Multiple Fingers Simultaneously](#grasping-with-multiple-fingers-simultaneously)
+   3. [Practical Tips for Grasping Functions](#practical-tips-for-grasping-functions)
 7. [Other Functions](#other-functions)
    1. [Querying the Current Motor Rotation](#querying-the-current-motor-rotation)
    2. [Querying the Current Motor Torque](#querying-the-current-motor-torque)
@@ -55,7 +55,7 @@ The MATLAB program operates as follows:
 
 ## Basic Settings
 
-It is possible to change the operating mode and maximum rotation speed of individual motors. Since the program's functions rely on these settings, it is advisable to leave them as they are. The `offset` and `max` lists can be set after all fingers have been calibrated to avoid recalibrating every time the program runs (except in the cases mentioned below). The last parameter that can be set here is `defaultSpeed`, which determines the speed at which the motors will rotate during movement and gripping functions if no specific speed is provided. The value ranges from 0 to 100, indicating the percentage of the motor's rotation speed, where 0% means the motor is stationary, and 100% represents the maximum rotation speed.
+It is possible to change the operating mode and maximum rotation speed of individual motors. Since the program's functions rely on these settings, it is advisable to leave them as they are. The `offset` and `max` lists can be set after all fingers have been calibrated to avoid recalibrating every time the program runs (except in the cases mentioned below). The last parameter that can be set here is `defaultSpeed`, which determines the speed at which the motors will rotate during movement and grasping functions if no specific speed is provided. The value ranges from 0 to 100, indicating the percentage of the motor's rotation speed, where 0% means the motor is stationary, and 100% represents the maximum rotation speed.
 
 Parameter settings between lines 81 and 87 of the MATLAB program:
 
@@ -177,9 +177,9 @@ moveAll(30, 50, 70, 80)
 ```
 The first line of code closes all fingers to 30%, with the speed determined by the basic settings. The second line of code closes the first finger to 30%, the second finger to 50%, and the third finger to 70%, with the speed determined by the basic settings. The third line closes all fingers to the same angles as the previous line but at 80% speed.
 
-## Gripping
+## Grasping
 
-### Gripping with a Single Finger
+### Grasping with a Single Finger
 
 To grip an object with only one finger, use the `grabOne` function. This function accepts three input variables and is defined as follows:
 
@@ -213,7 +213,7 @@ grabOne(1, 70, 100)
 
 The first line of code grips with finger number 2 at 50 % torque, with the speed determined by the basic settings. The second line of code grips with finger number 1 at 70 % torque and 100 % speed.
 
-### Gripping with Multiple Fingers Simultaneously
+### Grasping with Multiple Fingers Simultaneously
 
 To grip an object with multiple fingers simultaneously, use the `grabAll` function. This function can accept 1, 3, 4, or 6 input variables and is defined as follows:
 
@@ -243,7 +243,7 @@ grabAll(30, 50, 70, 20, 60, 80)
 
 The first line of code grips with all fingers at 30 % torque, with the speed determined by the basic settings. The second line grips with 30 % torque on the first finger, 50 % on the second finger, and 70 % on the third finger, with the speed determined by the basic settings. The third line grips with the same torques as the previous line, but this time the fingers move at 80 % speed. The last line grips with the same torque as the previous two lines, but now the first motor moves at 20 % speed, the second at 60 % speed, and the third at 80 % speed.
 
-### Practical Tips for Gripping Functions
+### Practical Tips for Grasping Functions
 
 The `grabAll` function can also be used to move only 2 or just 1 motor. This is done by setting either the desired maximum torque or the speed of the finger that you want to remain stationary to 0. If possible, it is better to set the speed to 0 because in this case, the motor is not initialized, whereas if only the torque is set to 0, the motor will still attempt to move momentarily until it measures the minimum torque. Correct usage examples:
 
