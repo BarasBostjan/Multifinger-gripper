@@ -100,7 +100,7 @@ calibrate(3)
 
 The `offset` and `max` lists store motor calibration data. The `offset` list contains motor rotations at the most closed position of the finger, while the `max` list contains data on the difference between the motor rotation at the most closed and most open positions of the finger.
 
-These lists can be defined in the basic MATLAB program settings (see [Basic Settings](#basic-settings)). Calibration can be performed once, and the calibration parameters can then be entered into the basic settings. If the program is run multiple times, the fingers do not need to be recalibrated (unless the motors have been powered off or the gripper configuration has changed).
+These lists can be defined in the basic settings (see [Basic Settings](#basic-settings)). Calibration can be performed once, and the calibration parameters can then be entered into the basic settings. If the program is run multiple times, the fingers do not need to be recalibrated (unless the motors have been powered off or the gripper configuration has changed).
 
 ### Manipulating Calibration Parameters
 
