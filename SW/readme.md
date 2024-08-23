@@ -141,7 +141,7 @@ moveOne(ID, moveTo, speed)
   
 - The final angles are recorded as a number between 0 and 100, representing the percentage of the finger's closure, where 0 % is a fully open finger and 100 % is a fully closed finger.
   
-- If the third input variable is not entered, the function will determine the speed based on the global variable defaultSpeed, defined in the basic settings (see [Basic Settings](#basic-settings)).
+- If the third input variable is not entered, the function will determine the speed based on the global variable `defaultSpeed`, defined in the basic settings (see [Basic Settings](#basic-settings)).
   
 - To control the finger's speed, enter the third input variable as a number between 0 and 100, representing the percentage of the motor's rotation speed, where 0 % is a stationary motor, and 100 % is the maximum rotation speed of the motor.
 
