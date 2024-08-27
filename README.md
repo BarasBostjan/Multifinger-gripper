@@ -34,7 +34,7 @@ This project uses Matlab for control and automation. Included in this repository
 
 ## Getting Started
 
-1. Print the parts -> [3D Models and Printing Guide](3D models/)
+1. Print the parts -> [3D Models and Printing Guide](3D-models/)
 2. Assemble the finger(s) -> [Assembly Instructions](assembly/)
 3. Run the Matlab code -> [Software and Control](SW/)
 
