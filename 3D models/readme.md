@@ -20,7 +20,7 @@ The most challenging is the printing of the worm gear. Initially, both the worm 
 
 Ultimately, we printed the gears from nylon. With nylon gears, we did not observe the wear that was present with Vera White and PLA plastics. However, when the gears were made from nylon, the worm began to disintegrate. We have not yet addressed this issue, but it serves as a good starting point for further development of the robotic finger.
 
-TODO - The board with PLA/ABS?
+The reconfiguration board, top plates, auxiliary part and auxiliary attachments were all printed using PLA plastic.
 
 As a support material, we commonly used Ultimaker Breakaway, which is easy to print and remove but can be challenging if located in inaccessible areas of the object. When removal of supports was predicted to be too difficult, we used BVOH (Butene Diol Vinyl Alcohol), a water-soluble material, making post-processing easier by dissolving supports in water.
 
