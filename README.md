@@ -38,7 +38,11 @@ This project uses Matlab for control and automation. Included in this repository
 2. Assemble the finger(s) -> [Assembly Instructions](assembly/)
 3. Run the Matlab code -> [Software and Control](SW/)
 
-### Open Lincense
-TODO
-- state the lincense (open, but must cite)
-- cite the paper
+## License
+
+This work is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.  
+For more details, please visit: [CC BY-NC 4.0 License](https://creativecommons.org/licenses/by-nc/4.0/).
+
+## Citation
+
+A citation for the associated paper will be added here once it is published.
